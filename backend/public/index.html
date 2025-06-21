@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Disaster Response Platform</title>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React & Babel (CDN) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Your App Code -->
+  <script type="text/babel">
+    function DisasterList() {
+      const [disasters, setDisasters] = React.useState([]);
+
+      React.useEffect(() => {
+        fetch('http://localhost:5000/api/disasters')
+          .then(res => res.json())
+          .then(data => setDisasters(data));
+      }, []);
+
+      return (
+        <div>
+          <h1>Active Disasters</h1>
+          <ul>
+            {disasters.map(disaster => (
+              <li key={disaster.id}>
+                <h2>{disaster.title}</h2>
+                <p>{disaster.description}</p>
+                <p><strong>Location:</strong> {disaster.location_name}</p>
+                <p><strong>Tags:</strong> {disaster.tags.join(', ')}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<DisasterList />, document.getElementById('root'));
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io("http://localhost:5000");
+  socket.on("disaster_updated", (data) => {
+    console.log("Update received:", data);
+    // You can fetch again or update UI manually
+  });
+</script>
+
+</body>
+</html>
