@@ -13,7 +13,7 @@ const DisastersList = () => {
   useEffect(() => {
     const fetchDisasters = async () => {
       try {
-        const res = await fetch('http://localhost:8080/api/disasters');
+       const res = await fetch(`${process.env.REACT_APP_API_URL}/api/disasters`);
         const json = await res.json();
         const allDisasters = Array.isArray(json.data) ? json.data : json;
         setDisasters(allDisasters);
@@ -53,7 +53,8 @@ const DisastersList = () => {
 
     if (!expanded[id]) {
       try {
-        const res = await fetch(`http://localhost:8080/api/disasters/${id}/resources?lat=${lat}&lon=${lon}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/disasters/${id}/resources?lat=${lat}&lon=${lon}`);
+
         const json = await res.json();
         setResources(prev => ({ ...prev, [id]: json.data || [] }));
       } catch (err) {
